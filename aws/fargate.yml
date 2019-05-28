@@ -53,6 +53,11 @@ Parameters:
     Type: String
     Default: mysql
 
+  Certificate:
+   Type: String
+   # Update with the certificate ARN from Certificate Manager, which must exist in the same region.
+   Default: "arn:aws:acm:us-east-1:YOUR-AWS-ACCOUNT-NUMBER:certificate/CERTIFICATE-NUMBER"
+
   # Important: Follow the CPU + memory combination rules laid out here: 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html
   Cpu:
@@ -237,8 +242,10 @@ Resources:
         - TargetGroupArn: !Ref 'PrismaTargetGroup'
           Type: 'forward'
       LoadBalancerArn: !Ref 'PublicLoadBalancer'
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref Certificate
 
   PrismaLogs:
     Type: "AWS::Logs::LogGroup"
